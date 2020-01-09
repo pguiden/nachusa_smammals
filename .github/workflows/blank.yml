@@ -1,0 +1,5 @@
+name: CI
+
+on: [push]
+
+git mv token_sale/* . && git rm token_sale && git commit
