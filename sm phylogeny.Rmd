@@ -1,0 +1,50 @@
+---
+title: "Nachusa small mammal phylogeny"
+author: "Pete Guiden"
+date: "January 9, 2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+This script uses the Phylomatic database to make a phylogeny of the small mammals we capture at Nachusa. This database uses the Bininda-Emonds et al. (2007) phylogeny (link: https://www.nature.com/articles/nature05634), which covers all mammals. It should do the trick for us, but if anyone knows of a better tree to use just let me know. 
+
+```{r setup, include=FALSE}
+library(adephylo)
+library(brranching)
+library(phylocomr)
+library(phytools)
+```
+
+### Obtaining Phylomatic names
+
+First step was to get all our taxa names into phylomatic format. Note that ground squirrels here haven't been moved out of Spermophilus, so we use their old name.
+
+```{r}
+phylomatic_names('Spermophilus_tridecemlineatus')
+
+taxa = c("cricetidae/microtus_ochrogaster/microtus_ochrogaster",
+         "cricetidae/microtus_pennsylvanicus/microtus_pennsylvanicus",
+         "cricetidae/mus_musculus/mus_musculus",
+         "cricetidae/peromyscus_leucopus/peromyscus_leucopus" ,     
+         "cricetidae/peromyscus_maniculatus/peromyscus_maniculatus",
+         "cricetidae/reithrodontomys_megalotis/reithrodontomys_megalotis",
+         "dipodidae/zapus_hudsonius/zapus_hudsonius",
+         #"sciuridae/ictidomys_tridecemlineatus/ictidomys_tridecemlineatus",
+         "sciuridae/spermophilus_tridecemlineatus/spermophilus_tridecemlineatus",
+         "soricidae/blarina_brevicauda/blarina_brevicauda",
+         "soricidae/sorex_cinereus/sorex_cinereus")
+```
+
+### Making the phylogeny
+
+Now we also want to visually inspect the phylogeny to make sure it's sensible, and extract the phylogenetic distance matrix which we can the use to calculate metrics of phylogenetic diversity.
+
+```{r pressure}
+tree = brranching::phylomatic(taxa = taxa, storedtree = 'binindaemonds2007')
+
+plot(tree)
+
+edgelabels(tree$edge.length, bg = 'white', col = "black", font = 2)
+
+distTips(tree)
+```
